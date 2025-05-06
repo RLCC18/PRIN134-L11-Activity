@@ -7,9 +7,15 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="gameArea">
-        <div id="target"></div>
+    <h3>Enter Number of Tag</h3>
+    <div id="inputArea" class="controls">
+        <form action="">
+            <input type="number" id="numTargets" placeholder="Enter Num">
+            <button id="setupBtn" type="submit">Setup</button>
+        </form>
     </div>
+    <div id="gameArea"></div>
+    <div class="target"></div>
     <div id="scoreBoard">Score: 0</div>
     <script src="main.js"></script>
 </body>
