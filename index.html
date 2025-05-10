@@ -8,16 +8,14 @@
 </head>
 <body>
     <h3>Enter Number of Tag</h3>
-    <div id="inputArea" class="controls">
-        <form action="">
-            <input type="number" id="numTargets" placeholder="Enter Num">
-            <button id="setupBtn" type="submit">Setup</button>
-        </form>
+    <div id="inputArea">
+        <input id="numInput" type="number" min="1" max="5" value="3">
+        <button id="setupBtn">Setup</button>
     </div>
-    <div id="gameArea"></div>
-    <div class="target"></div>
+    <div id="gameArea">
+        <div id="target"></div>
+    </div>
     <div id="scoreBoard">Score: 0</div>
     <script src="main.js"></script>
 </body>
 </html>
-

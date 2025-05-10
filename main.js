@@ -1,69 +1,77 @@
 const gameArea = document.getElementById('gameArea');
-const setupBtn = document.getElementById('setupBtn');
-const numTargetsInput = document.getElementById('numTargets');
 const scoreBoard = document.getElementById('scoreBoard');
+const setupBtn = document.getElementById('setupBtn');
+const numInput = document.getElementById('numInput');
 
 let score = 0;
-let targets = [];
-let expectedNumber = 1;
+let nextTarget = 1;
 let totalTargets = 0;
+let currentTargetCount = 0;
 
-function createTargets(num) {
-    gameArea.innerHTML = '';
-    targets = [];
-    expectedNumber = 1;
-    totalTargets = num;
-
-    for (let i = 1; i <= num; i++) {
-        const target = document.createElement('div');
-        target.classList.add('target');
-        target.textContent = i;
-        gameArea.appendChild(target);
-        targets.push(target);
-
-        moveTarget(target);
-
-        target.addEventListener('click', () => handleTargetClick(target));
-    }
-}
-
-function moveTarget(target) {
-    const gameAreaRect = gameArea.getBoundingClientRect();
-    const maxX = gameAreaRect.width - target.offsetWidth;
-    const maxY = gameAreaRect.height - target.offsetHeight;
-
-    const randomX = Math.random() * maxX;
-    const randomY = Math.random() * maxY;
-
-    target.style.left = `${randomX}px;`;
-    target.style.top = `${randomY}px`;
-}
-
-function handleTargetClick(target) {
-    if (parseInt(target.textContent) === expectedNumber) {
-        target.remove();
-        expectedNumber++;
-
-        if (expectedNumber > totalTargets) {
-            score++;
-            scoreBoard.textContent = `Score: ${score}`;
-
-            setTimeout(() => {
-                createTargets(totalTargets); 
-            }, );
-        }
-    }
-}
-
-setupBtn.addEventListener('click', () => {
-    const num = parseInt(numTargetsInput.value);
-    if (!isNaN(num) && num > 0) {
-        score = 0;
-        scoreBoard.textContent = `Score: ${score}`;
-        createTargets(num);
-    }
+gameArea.addEventListener('contextmenu', function (event) {
+  event.preventDefault();
 });
 
+setupBtn.addEventListener('click', () => {
+  const targetCount = parseInt(numInput.value);
+  if (!isNaN(targetCount) && targetCount > 0) {
+    score = 0;
+    updateScore();
+    currentTargetCount = targetCount;
+    setupTargets(currentTargetCount);
+  }
+});
+
+function setupTargets(count) {
+  gameArea.innerHTML = '';
+  nextTarget = 1;
+  totalTargets = count;
+
+  const gameAreaRect = gameArea.getBoundingClientRect();
+
+  for (let i = 1; i <= count; i++) {
+    const target = document.createElement('div');
+    target.classList.add('target');
+    target.textContent = i;
+
+    const size = 40;
+    const maxX = gameAreaRect.width - size;
+    const maxY = gameAreaRect.height - size;
+    const randomX = Math.floor(Math.random() * maxX);
+    const randomY = Math.floor(Math.random() * maxY);
+
+    target.style.left = `${randomX}px`;
+    target.style.top = `${randomY}px`;
+
+
+    target.addEventListener('contextmenu', function (event) {
+      event.preventDefault();
+      const number = parseInt(target.textContent);
+      if (number === nextTarget) {
+        target.remove();
+        nextTarget++;
+
+        if (nextTarget > totalTargets) {
+
+          score++;
+          updateScore();
+
+          setTimeout(() => {
+            setupTargets(currentTargetCount);
+          }, 1000);
+        }
+      }
+    });
+
+    gameArea.appendChild(target);
+  }
+}
+
+function updateScore() {
+  scoreBoard.textContent = `Score: ${score}`;
+}
+
+// RESETBTN
 document.addEventListener('keydown', function(event){
   if (event.ctrlKey && event.key === 'o') {
     event.preventDefault();
